@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Additional Info Form</title>
+    {% load static %}
+    {% load crispy_forms_tags %}
+    {% load widget_tweaks %}
+    {% load i18n %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/additional.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="logo">
+            <img src="{% static 'icon/logo.svg' %}" alt="App logo">
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="form-intro">
+            <h1 class="form-title">Dataset Donation Form</h1>
+            <p class="form-description">We offer users the option to upload their dataset data to our repository. Users can provide tabular or non-tabular dataset data which will be made publicly available on our repository. Donators are free to edit their donated datasets, but edits must be approved before finalizing.</p>
+        </section>
+        <section class="form-content">
+            <div class="form-tabs">
+                <button class="form-tab">Base Informations</button>
+                <button class="form-tab">Participants</button>
+                <button class="form-tab">Dataset</button>
+                <button class="form-tab active">Additional</button>
+                <button class="form-tab">Submission</button>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="crispy-label" for="{{ form.keyword1.id_for_label }}">{{ form.keyword1.label }}</label>
+                    {{ form.keyword1|add_class:"crispy-input" }}
+                </div>
+                <div class="form-group hidden" id="keyword2">
+                    <label class="crispy-label" for="{{ form.keyword2.id_for_label }}">{{ form.keyword2.label }}</label>
+                    {{ form.keyword2|add_class:"crispy-input" }}
+                </div>
+                <div class="form-group hidden" id="keyword3">
+                    <label class="crispy-label" for="{{ form.keyword3.id_for_label }}">{{ form.keyword3.label }}</label>
+                    {{ form.keyword3|add_class:"crispy-input" }}
+                </div>
+                <div class="form-group">
+                    <button type="button" class="add-keyword-button" onclick="showNextKeyword()">
+                        <span class="plus-icon"><img src="{% static 'icon/add-creator.svg' %}"></span>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label class="crispy-label" for="{{ form.additional_info.id_for_label }}">{{ form.additional_info.label }}</label>
+                    {{ form.additional_info|add_class:"crispy-input" }}
+                </div>
+                {{ photo_formset.management_form }}
+                {% for form in photo_formset %}
+                    <div class="form-group">
+                        <label class="crispy-label" for="{{ form.photo_review.id_for_label }}">{{ form.photo_review.label }}</label>
+                        {{ form.photo_review|add_class:"custom-file-upload" }}
+                    </div>
+                {% endfor %}
+                <div class="form-actions">
+                    <button class="back-button" name="back" type="submit">Back</button>
+                    <button class="next-button" name="next" type="submit">Next</button>
+                </div>
+            </form>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="footer-logo">D4ttā</div>
+        <div class="footer-columns">
+            <div class="footer-column">
+                <h3>The Project</h3>
+                <ul>
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Contribute</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">View Datasets</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Logistic</h3>
+                <ul>
+                    <li><a href="#">Our Team</a></li>
+                    <li><a href="#">Contact us</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <script>
+        function showNextKeyword() {
+            const keywords = ['keyword2', 'keyword3'];
+            for (const keyword of keywords) {
+                const element = document.getElementById(keyword);
+                if (element.classList.contains('hidden')) {
+                    element.classList.remove('hidden');
+                    if (keyword === 'keyword3') {
+                        document.querySelector('.add-keyword-button').style.display = 'none';
+                    }
+                    break;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dataset Donation Form</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/submission.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="logo">
+            <img src="{% static 'icon/logo.svg' %}" alt="App logo">
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="form-intro">
+            <h1 class="form-title">Dataset Donation Form</h1>
+            <p class="form-description">We offer users the option to upload their dataset data to our repository. Users can provide tabular or non-tabular dataset data which will be made publicly available on our repository. Donators are free to edit their donated datasets, but edits must be approved before finalizing.</p>
+        </section>
+        <section class="form-content">
+            <div class="form-tabs">
+                <button class="form-tab">Base Informations</button>
+                <button class="form-tab">Participants</button>
+                <button class="form-tab">Dataset</button>
+                <button class="form-tab">Additional</button>
+                <button class="form-tab active">Submission</button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="crispy-label">Dataset Title</label>
+                    <p class="crispy-input">{{ dataset.title }}</p>
+                </div>
+                <div class="form-group">
+                    <label class="crispy-label">Subtitle</label>
+                    <p class="crispy-input">{{ dataset.subtitle }}</p>
+                </div>
+                <div class="form-group">
+                    <label class="crispy-label">Number of Instances (Rows) in Dataset</label>
+                    <p class="crispy-input">{{ dataset.num_instances }}</p>
+                </div>
+                <div class="form-group">
+                    <label class="crispy-label">Number of Features in Dataset</label>
+                    <p class="crispy-input">{{ dataset.num_features }}</p>
+                </div>
+                <div class="form-group">
+                    <label class="crispy-label">Profile Graphics</label>
+                    {% if dataset.profile_graphics %}
+                        <img src="{{ dataset.profile_graphics.url }}" class="profile-graphics" />
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label class="crispy-label">Verificator</label>
+                    {% for author in authors %}
+                        {% if author.verificator %}
+                            <p class="crispy-input">{{ author.verificator }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label class="crispy-label">Creators</label>
+                    {% for author in authors %}
+                        {% if author.creator1 %}
+                            <p class="crispy-input">{{ author.creator1 }}</p>
+                        {% endif %}
+                        {% if author.creator2 %}
+                            <p class="crispy-input">{{ author.creator2 }}</p>
+                        {% endif %}
+                        {% if author.creator3 %}
+                            <p class="crispy-input">{{ author.creator3 }}</p>
+                        {% endif %}
+                        {% if author.creator4 %}
+                            <p class="crispy-input">{{ author.creator4 }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label class="crispy-label">Dataset Files</label>
+                    {% for dataset_file in dataset_files %}
+                        <p class="crispy-input"><a href="{{ dataset_file.file.url }}" target="_blank">{{ dataset_file.file.name }}</a></p>
+                        <p class="crispy-input">Missing Values: {{ dataset_file.has_missing_values }}</p>
+                        <p class="crispy-input">Completeness Status: {{ dataset_file.completeness_status }}</p>
+                        <p class="crispy-input">Subject Area: {{ dataset_file.subject_area }}</p>
+                        <p class="crispy-input">Associated Task: {{ dataset_file.associated_task }}</p>
+                        <p class="crispy-input">Feature Type: {{ dataset_file.feature_type }}</p>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label class="crispy-label">Additional Information</label>
+                    {% for info in additional_info %}
+                        {% if info.keyword1 %}
+                            <p class="crispy-input">Keyword 1: {{ info.keyword1 }}</p>
+                        {% endif %}
+                        {% if info.keyword2 %}
+                            <p class="crispy-input">Keyword 2: {{ info.keyword2 }}</p>
+                        {% endif %}
+                        {% if info.keyword3 %}
+                            <p class="crispy-input">Keyword 3: {{ info.keyword3 }}</p>
+                        {% endif %}
+                        {% if info.additional_info %}
+                            <p class="crispy-input">Additional Info: {{ info.additional_info }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label class="crispy-label">Photo Reviews</label>
+                    {% for photo in photo_reviews %}
+                        {% if photo.photo_review %}
+                            <img src="{{ photo.photo_review.url }}" class="profile-graphics" />
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="form-actions">
+                    <a class="back-button" href="{% url 'additional_info_form' %}">Back</a>
+                    <button class="next-button" type="submit">Submit</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

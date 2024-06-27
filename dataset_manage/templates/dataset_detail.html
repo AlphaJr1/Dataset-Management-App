@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ dataset.title }}</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/detail.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="logo">
+            <img src="{% static 'icon/logo.svg' %}" alt="App logo">
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="dataset-header">
+            <div class="back-button">
+                <a href="{% url 'dataset_list' %}"><img src="{% static 'icon/back.svg' %}" alt="Back"></a>
+            </div>
+            <div class="dataset-title">
+                <img src="{{ dataset.profile_graphics.url }}" alt="Profile Image" class="profile-image">
+                <div class="dataset-info">
+                    <h1>{{ dataset.title }}</h1>
+                    <p>{{ dataset.subtitle }}</p>
+                    <p>Created on {{ dataset.created_at }}</p>
+                </div>
+            </div>
+        </section>
+        <div class="buttons">
+            {% for file in dataset_files %}
+            <a href="{{ file.file.url }}" class="button download-button" download>
+                <img src="{% static 'icon/download.svg' %}" alt="download-icon">
+                Download
+            </a>
+            {% endfor %}
+            <button class="button print-button" id="generate-pdf">
+                <img src="{% static 'icon/print.svg' %}" alt="print-icon">
+                Print Details
+            </button>
+        </div>
+        <section class="dataset-details">
+            <div class="details-container">
+                <div class="details-keywords">
+                    <h3>Keywords</h3>
+                    <ul>
+                        {% for info in additional_info %}
+                            <li>{{ info.keyword1 }}</li>
+                            {% if info.keyword2 %}<li>{{ info.keyword2 }}</li>{% endif %}
+                            {% if info.keyword3 %}<li>{{ info.keyword3 }}</li>{% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="details-info">
+                    <div class="details-num">
+                        <p><img src="{% static 'icon/instances.svg' %}" alt="instances-icon"> {{ dataset.num_instances }} instances</p>
+                        <p><img src="{% static 'icon/feature3.svg' %}" alt="features-icon"> {{ dataset.num_features }} features</p>
+                    </div>
+                </div>
+                <div class="details-creators">
+                    <h3>Creators</h3>
+                    <ul>
+                        {% for author in authors %}
+                            <li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator1 }}</li>
+                            {% if author.creator2 %}<li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator2 }}</li>{% endif %}
+                            {% if author.creator3 %}<li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator3 }}</li>{% endif %}
+                            {% if author.creator4 %}<li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator4 }}</li>{% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="details-releases">
+                    <h3>Releases</h3>
+                    <p>Missing Value: {{ dataset_files.0.has_missing_values }}</p>
+                    <p>Status: {{ dataset_files.0.completeness_status }}</p>
+                </div>
+                <div class="details-verificator">
+                    <h3>Verificator</h3>
+                    <p><img src="{% static 'icon/tag-verificator.svg' %}">{{ authors.0.verificator }}</p>
+                </div>
+            </div>
+        </section>
+        <section class="photo-reviews">
+            <h2>Photo Reviews</h2>
+            <div class="photos-grid">
+                {% for photo in photo_reviews %}
+                    {% if photo.photo_review %}
+                        <img src="{{ photo.photo_review.url }}" alt="Photo Review">
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+        <section class="activity-detail">
+            <h2>Activity Detail</h2>
+            <canvas id="viewsChart" width="580" height="230"></canvas>
+        </section>
+        <section class="comments">
+            <h2>Reviews</h2>
+            {% if comments %}
+            <div id="comments">
+                {% for comment in comments %}
+                    <div id="comment-{{ comment.id }}">
+                        <p>{{ comment.text }}</p>
+                        <small>{{ comment.created_at }}</small>
+                        <button class="delete-comment" data-id="{{ comment.id }}">Delete</button>
+                    </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>There are no reviews for this dataset yet.</p>
+            {% endif %}
+            <button id="write-review" class="button write-review-button">Write a review</button>
+            <form id="comment-form" method="post" style="display:none;">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit" class="button submit-review-button">Submit Review</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        // Chart.js code for views chart
+        var ctxViews = document.getElementById('viewsChart').getContext('2d');
+        var viewDates = [];
+        var viewCounts = [];
+    
+        {% for view in views %}
+            viewDates.push('{{ view.date }}');
+            viewCounts.push({{ view.count }}); 
+        {% endfor %}
+    
+        var maxViewCount = Math.max(...viewCounts);
+        var chartMaxValue = Math.ceil(maxViewCount * 1.25);
+    
+        var viewsChart = new Chart(ctxViews, {
+            type: 'line',
+            data: {
+                labels: viewDates,
+                datasets: [{
+                    label: 'Views',
+                    data: viewCounts,
+                    borderColor: '#151101',
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#151101'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: chartMaxValue
+                    }
+                }
+            }
+        });
+    
+        $(document).ready(function () {
+            // Handle add comment via AJAX
+            $('#comment-form').submit(function (e) {
+                e.preventDefault(); // Prevent the form from submitting the default way
+    
+                $.ajax({
+                    type: 'POST',
+                    url: window.location.href, // The current URL
+                    data: $(this).serialize(), // Serialize the form data
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            // Append the new comment to the comments div
+                            $('#comments').prepend(`
+                                <div id="comment-${response.comment.id}">
+                                    <p>${response.comment.text}</p>
+                                    <small>${response.comment.created_at}</small>
+                                    <button class="delete-comment" data-id="${response.comment.id}">Delete</button>
+                                </div>
+                            `);
+                            $('#comment-form')[0].reset(); // Reset the form
+                        } else {
+                            console.error('Error adding comment:', response.errors);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error adding comment:', error);
+                    }
+                });
+            });
+    
+            // Handle delete comment via AJAX
+            $(document).on('click', '.delete-comment', function () {
+                var commentId = $(this).data('id');
+                $.ajax({
+                    type: 'POST',
+                    url: `{% url "delete_comment" 0 %}`.replace('0', commentId),
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            $(`#comment-${commentId}`).remove();
+                        } else {
+                            alert('Error deleting comment.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('Error deleting comment.');
+                    }
+                });
+            });
+    
+            // Show the review form
+            $('#write-review').click(function () {
+                $('#comment-form').toggle();
+            });
+    
+            // Print PDF
+            $('#generate-pdf').click(function () {
+                const { jsPDF } = window.jspdf;
+                var pdf = new jsPDF();
+                pdf.text(document.getElementById('title').textContent, 10, 10);
+                html2canvas(document.body).then(function (canvas) {
+                    var imgData = canvas.toDataURL('image/png');
+                    pdf.addImage(imgData, 'PNG', 10, 20);
+                    pdf.save('dataset-details.pdf');
+                });
+            });
+        });
+    </script>    
+</body>
+
+</html>

@@ -5,13 +5,16 @@ from .models import Dataset, Author, DatasetFile, AdditionalInfo, PhotoReview, C
 class BasicForm(forms.ModelForm):
     class Meta:
         model = Dataset
-        fields = ['title', 'subtitle', 'num_instances', 'num_features', 'profile_graphics']
+        fields = ['title', 'subtitle', 'num_instances', 'num_features', 'profile_graphics', 'project_name', 'description_problem', 'request_id']
         labels = {
             'title': 'Dataset Title',
             'subtitle': 'Subtitle',
             'num_instances': 'Number of Instances (Rows) in Dataset',
             'num_features': 'Number of Features in Dataset',
             'profile_graphics': 'Profile Graphics',
+            'project_name':'Project Name',
+            'description_problem': 'Description Problem',
+            'request_id': 'Request ID',
         }
         widgets = {
             'title': forms.TextInput(attrs={'class': 'crispy-input', 'placeholder': 'Enter Dataset Title'}),
@@ -19,7 +22,16 @@ class BasicForm(forms.ModelForm):
             'num_instances': forms.NumberInput(attrs={'class': 'crispy-input', 'placeholder': 'Enter Number of Instances'}),
             'num_features': forms.NumberInput(attrs={'class': 'crispy-input', 'placeholder': 'Enter Number of Features'}),
             'profile_graphics': forms.ClearableFileInput(attrs={'class': 'custom-file-upload', 'placeholder': 'Choose a file or drag and drop here'}),
+            'project_name': forms.TextInput(attrs={'readonly': 'readonly', 'class': 'crispy-input'}),
+            'description_problem': forms.TextInput(attrs={'readonly': 'readonly', 'class': 'crispy-input'}),
+            'request_id': forms.TextInput(attrs={'readonly': 'readonly', 'class': 'crispy-input'}),
         }
+    def __init__(self, *args, **kwargs):
+        super(BasicForm, self).__init__(*args, **kwargs)
+        if not self.initial.get('project_name'):
+            self.fields['project_name'].widget = forms.HiddenInput()
+        if not self.initial.get('description_problem'):
+            self.fields['description_problem'].widget = forms.HiddenInput()
 
 class AuthorForm(forms.ModelForm):
     class Meta:
@@ -93,13 +105,19 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['text']
-        widgets = {
-            'text': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Tambahkan komentar Anda...'}),
+        labels = {
+            'text': ''
         }
+        widgets = {
+            'text': forms.Textarea(attrs={
+                'class': 'comment-text',
+                'placeholder': 'Add your reviews...'}),
+        }
+        
 
 # Formsets for managing multiple forms
-AuthorFormSet = modelformset_factory(Author, form=AuthorForm, extra=0)
-DatasetFileFormSet = modelformset_factory(DatasetFile, form=DatasetFileForm, extra=0)
-AdditionalInfoFormSet = modelformset_factory(AdditionalInfo, form=AdditionalInfoForm, extra=0)
-PhotoReviewFormSet = forms.modelformset_factory(PhotoReview, form=PhotoReviewForm, extra=1)
+#AuthorFormSet = modelformset_factory(Author, form=AuthorForm, extra=0)
+#DatasetFileFormSet = modelformset_factory(DatasetFile, form=DatasetFileForm, extra=0)
+#AdditionalInfoFormSet = modelformset_factory(AdditionalInfo, form=AdditionalInfoForm, extra=0)
+#PhotoReviewFormSet = forms.modelformset_factory(PhotoReview, form=PhotoReviewForm, extra=1)
 

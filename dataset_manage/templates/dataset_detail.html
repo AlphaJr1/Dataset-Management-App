@@ -4,6 +4,9 @@
 <head>
     <title>{{ dataset.title }}</title>
     {% load static %}
+    {% load crispy_forms_tags %}
+    {% load widget_tweaks %}
+    {% load i18n %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/detail.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
@@ -23,38 +26,62 @@
                 <a href="{% url 'dataset_list' %}"><img src="{% static 'icon/back.svg' %}" alt="Back"></a>
             </div>
             <div class="dataset-title">
+                <h1 id="title"></h1>
                 <img src="{{ dataset.profile_graphics.url }}" alt="Profile Image" class="profile-image">
                 <div class="dataset-info">
                     <h1>{{ dataset.title }}</h1>
                     <p>{{ dataset.subtitle }}</p>
-                    <p>Created on {{ dataset.created_at }}</p>
+                    <p>Created on {{ dataset.created_at|date:"F j, Y" }}</p>
                 </div>
             </div>
         </section>
         <div class="buttons">
             {% for file in dataset_files %}
+            {% if file.file %}
             <a href="{{ file.file.url }}" class="button download-button" download>
                 <img src="{% static 'icon/download.svg' %}" alt="download-icon">
                 Download
             </a>
+            {% endif %}
             {% endfor %}
             <button class="button print-button" id="generate-pdf">
                 <img src="{% static 'icon/print.svg' %}" alt="print-icon">
                 Print Details
             </button>
         </div>
+        {% if additional_info %}
+        <section class="about-dataset">
+            <h2>About Dataset</h2>
+            <div class="additional_info">
+                {% for info in additional_info %}
+                {% if info.additional_info %}
+                <p>{{ info.additional_info }}</p>
+                {% endif %}
+                {% endfor %}
+                {% for file in dataset.datasetfile_set.all %}
+                    <p>Subject Area: {{ file.subject_area }}</p>
+                    <p>Associated Task: {{ file.associated_task }}</p>
+                    <p>Feature Type: {{ file.feature_type }}</p>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
         <section class="dataset-details">
             <div class="details-container">
+                {% for info in additional_info %}
+                {% if info.keyword1 or info.keyword2 or info.keyword3 %}
                 <div class="details-keywords">
                     <h3>Keywords</h3>
                     <ul>
                         {% for info in additional_info %}
-                            <li>{{ info.keyword1 }}</li>
-                            {% if info.keyword2 %}<li>{{ info.keyword2 }}</li>{% endif %}
-                            {% if info.keyword3 %}<li>{{ info.keyword3 }}</li>{% endif %}
+                        {% if info.keyword1 %}<li>{{ info.keyword1 }}</li>{% endif %}
+                        {% if info.keyword2 %}<li>{{ info.keyword2 }}</li>{% endif %}
+                        {% if info.keyword3 %}<li>{{ info.keyword3 }}</li>{% endif %}
                         {% endfor %}
                     </ul>
                 </div>
+                {% endif %}
+                {% endfor %}
                 <div class="details-info">
                     <div class="details-num">
                         <p><img src="{% static 'icon/instances.svg' %}" alt="instances-icon"> {{ dataset.num_instances }} instances</p>
@@ -65,15 +92,19 @@
                     <h3>Creators</h3>
                     <ul>
                         {% for author in authors %}
-                            <li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator1 }}</li>
-                            {% if author.creator2 %}<li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator2 }}</li>{% endif %}
-                            {% if author.creator3 %}<li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator3 }}</li>{% endif %}
-                            {% if author.creator4 %}<li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator4 }}</li>{% endif %}
+                        <li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator1 }}</li>
+                        {% if author.creator2 %}<li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator2 }}
+                        </li>{% endif %}
+                        {% if author.creator3 %}<li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator3 }}
+                        </li>{% endif %}
+                        {% if author.creator4 %}<li><img src="{% static 'icon/tag-creator.svg' %}">{{ author.creator4 }}
+                        </li>{% endif %}
                         {% endfor %}
                     </ul>
                 </div>
                 <div class="details-releases">
                     <h3>Releases</h3>
+                    <p>Last modified on {{ dataset.updated_at|date:"F j, Y" }}</p>
                     <p>Missing Value: {{ dataset_files.0.has_missing_values }}</p>
                     <p>Status: {{ dataset_files.0.completeness_status }}</p>
                 </div>
@@ -83,16 +114,27 @@
                 </div>
             </div>
         </section>
+        {% if photo_reviews %}
         <section class="photo-reviews">
             <h2>Photo Reviews</h2>
             <div class="photos-grid">
                 {% for photo in photo_reviews %}
-                    {% if photo.photo_review %}
-                        <img src="{{ photo.photo_review.url }}" alt="Photo Review">
-                    {% endif %}
+                {% if photo.photo_review %}
+                <img src="{{ photo.photo_review.url }}" alt="Photo Review">
+                {% endif %}
                 {% endfor %}
             </div>
         </section>
+        {% endif %}
+        {% if dataset.project_name %}
+        <section class="dataset-project">
+            <h2>Project Using this Dataset</h2>
+            <div class="detail-project">
+                <h4>{{ dataset.description_problem }}</h4>
+                <p>{{ dataset.project_name }}</p>
+            </div>
+        </section>
+        {% endif %}
         <section class="activity-detail">
             <h2>Activity Detail</h2>
             <canvas id="viewsChart" width="580" height="230"></canvas>
@@ -102,11 +144,11 @@
             {% if comments %}
             <div id="comments">
                 {% for comment in comments %}
-                    <div id="comment-{{ comment.id }}">
-                        <p>{{ comment.text }}</p>
-                        <small>{{ comment.created_at }}</small>
-                        <button class="delete-comment" data-id="{{ comment.id }}">Delete</button>
-                    </div>
+                <div id="comment-{{ comment.id }}">
+                    <p>{{ comment.text }}</p>
+                    <small>{{ comment.created_at }}</small>
+                    <button class="delete-comment" data-id="{{ comment.id }}">Delete</button>
+                </div>
                 {% endfor %}
             </div>
             {% else %}
@@ -125,15 +167,15 @@
         var ctxViews = document.getElementById('viewsChart').getContext('2d');
         var viewDates = [];
         var viewCounts = [];
-    
+
         {% for view in views %}
-            viewDates.push('{{ view.date }}');
-            viewCounts.push({{ view.count }}); 
+        viewDates.push('{{ view.date }}');
+        viewCounts.push({{ view.count }});
         {% endfor %}
-    
+
         var maxViewCount = Math.max(...viewCounts);
         var chartMaxValue = Math.ceil(maxViewCount * 1.25);
-    
+
         var viewsChart = new Chart(ctxViews, {
             type: 'line',
             data: {
@@ -157,19 +199,17 @@
                 }
             }
         });
-    
+
         $(document).ready(function () {
-            // Handle add comment via AJAX
             $('#comment-form').submit(function (e) {
-                e.preventDefault(); // Prevent the form from submitting the default way
-    
+                e.preventDefault(); 
+
                 $.ajax({
                     type: 'POST',
-                    url: window.location.href, // The current URL
-                    data: $(this).serialize(), // Serialize the form data
+                    url: window.location.href, 
+                    data: $(this).serialize(), 
                     success: function (response) {
                         if (response.status === 'success') {
-                            // Append the new comment to the comments div
                             $('#comments').prepend(`
                                 <div id="comment-${response.comment.id}">
                                     <p>${response.comment.text}</p>
@@ -177,7 +217,7 @@
                                     <button class="delete-comment" data-id="${response.comment.id}">Delete</button>
                                 </div>
                             `);
-                            $('#comment-form')[0].reset(); // Reset the form
+                            $('#comment-form')[0].reset(); 
                         } else {
                             console.error('Error adding comment:', response.errors);
                         }
@@ -187,8 +227,7 @@
                     }
                 });
             });
-    
-            // Handle delete comment via AJAX
+
             $(document).on('click', '.delete-comment', function () {
                 var commentId = $(this).data('id');
                 $.ajax({
@@ -208,25 +247,29 @@
                     }
                 });
             });
-    
-            // Show the review form
+
             $('#write-review').click(function () {
                 $('#comment-form').toggle();
             });
-    
-            // Print PDF
+
             $('#generate-pdf').click(function () {
                 const { jsPDF } = window.jspdf;
-                var pdf = new jsPDF();
-                pdf.text(document.getElementById('title').textContent, 10, 10);
-                html2canvas(document.body).then(function (canvas) {
+                var pdf = new jsPDF('p', 'pt', 'a4'); 
+                var element = document.querySelector('.main-content'); 
+
+                var originalWidth = element.offsetWidth;
+                var originalHeight = element.offsetHeight;
+
+                var pdfWidth = pdf.internal.pageSize.getWidth();
+                var pdfHeight = (originalHeight * pdfWidth) / originalWidth;
+
+                html2canvas(element, { scale: 1 }).then(function (canvas) {
                     var imgData = canvas.toDataURL('image/png');
-                    pdf.addImage(imgData, 'PNG', 10, 20);
+                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                     pdf.save('dataset-details.pdf');
                 });
             });
         });
-    </script>    
+    </script>
 </body>
-
 </html>

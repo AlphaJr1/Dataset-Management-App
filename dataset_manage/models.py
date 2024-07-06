@@ -6,7 +6,12 @@ class Dataset(models.Model):
     subtitle = models.TextField(default='', verbose_name="Subtitle")
     num_instances = models.IntegerField(verbose_name="Number of Instances")
     num_features = models.IntegerField(verbose_name="Number of Features")
-    profile_graphics = models.ImageField(upload_to='profile_graphics/', default='default_image.jpg', verbose_name="Profile Graphics")
+    profile_graphics = models.ImageField(upload_to='profile_graphics/', default='media/default_image.jpg', verbose_name="Profile Graphics")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    project_name = models.CharField(max_length=255, null=True, blank=True)
+    request_id = models.IntegerField(null=True, blank=True)
+    description_problem = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -103,3 +108,16 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text[:50]
+
+class DatasetRequest(models.Model):
+    project_name = models.CharField(max_length=255)
+    description_problem = models.TextField()
+    description_target = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    notes = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=50, default='pending')
+    completeness_status = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.project_name

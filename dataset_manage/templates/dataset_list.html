@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Dataset List</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/workspace.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             function filterDatasets() {
-                var query = $('#search-input').val();
+                var query = $('#search-input-1').val() || $('#search-input-2').val();
                 var subjectArea = $('#subject-area-input').val();
                 var associatedTask = $('#associated-task-input').val();
                 var featureType = $('#feature-type-input').val();
@@ -20,62 +21,88 @@
                         'associated_task': associatedTask,
                         'feature_type': featureType
                     },
-                    success: function(data) {
+                    success: function (data) {
                         $('#dataset-list').empty();
-                        data.forEach(function(dataset) {
+                        data.forEach(function (dataset) {
                             var datasetItem = `
-                                <li class="dataset-item">
-                                    <img src="${dataset.profile_graphics}" alt="Profile Image" class="dataset-image">
-                                    <div class="dataset-details">
-                                        <h2><a href="/dataset_manage/dataset/${dataset.id}/">${dataset.title}</a></h2>
-                                        <p>${dataset.subtitle}</p>
-                                        <div class="dataset-meta">`;
-                            dataset.files.forEach(function(file) {
+                            <li class="dataset-item">
+                                <img src="${dataset.profile_graphics}" alt="Profile Image" class="dataset-image">
+                                <div class="dataset-details">
+                                    <h2><a href="/dataset_manage/dataset/${dataset.id}/">${dataset.title}</a></h2>
+                                    <p>${dataset.subtitle}</p>
+                                    <div class="dataset-meta">`;
+                            dataset.files.forEach(function (file) {
                                 datasetItem += `
-                                    <div class="meta-item">
-                                        <img src="{% static 'icon/area.svg' %}" class="meta-icon" alt="Subject Icon">
-                                        ${file.subject_area}
-                                    </div>
-                                    <div class="meta-item">
-                                        <img src="{% static 'icon/task.svg' %}" class="meta-icon" alt="Task Icon">
-                                        ${file.associated_task}
-                                    </div>
-                                    <div class="meta-item">
-                                        <img src="{% static 'icon/feature.svg' %}" class="meta-icon" alt="Feature Icon">
-                                        ${file.feature_type}
-                                    </div>
-                                    <div class="meta-item">
-                                        <img src="{% static 'icon/status.svg' %}" class="meta-icon" alt="Status Icon">
-                                        ${file.completeness_status}
-                                    </div>`;
+                                <div class="meta-item">
+                                    <img src="{% static 'icon/area.svg' %}" class="meta-icon" alt="Subject Icon">
+                                    ${file.subject_area}
+                                </div>
+                                <div class="meta-item">
+                                    <img src="{% static 'icon/task.svg' %}" class="meta-icon" alt="Task Icon">
+                                    ${file.associated_task}
+                                </div>
+                                <div class="meta-item">
+                                    <img src="{% static 'icon/feature.svg' %}" class="meta-icon" alt="Feature Icon">
+                                    ${file.feature_type}
+                                </div>
+                                <div class="meta-item">
+                                    <img src="{% static 'icon/status.svg' %}" class="meta-icon" alt="Status Icon">
+                                    ${file.completeness_status}
+                                </div>`;
                             });
                             datasetItem += `
-                                        </div>
                                     </div>
-                                    <div class="dataset-actions">
-                                        <a href="edit/${dataset.id}/" class="edit-button">
-                                            <img src="{% static 'icon/edit.svg' %}" alt="Edit Icon" class="action-icon">
-                                            Edit
-                                        </a>
-                                        <a href="delete/${dataset.id}/" class="delete-button">
-                                            <img src="{% static 'icon/delete.svg' %}" alt="Remove Icon" class="action-icon">
-                                            Remove
-                                        </a>
-                                    </div>
-                                </li>`;
+                                </div>
+                                <div class="dataset-actions">
+                                    <a href="edit/${dataset.id}/" class="edit-button">
+                                        <img src="{% static 'icon/edit.svg' %}" alt="Edit Icon" class="action-icon">
+                                        Edit
+                                    </a>
+                                    <a href="delete/${dataset.id}/" class="delete-button">
+                                        <img src="{% static 'icon/delete.svg' %}" alt="Remove Icon" class="action-icon">
+                                        Remove
+                                    </a>
+                                </div>
+                            </li>`;
                             $('#dataset-list').append(datasetItem);
                         });
                     }
                 });
             }
-            $('#search-input, #subject-area-input, #associated-task-input, #feature-type-input').on('keyup change', filterDatasets);
+    
+            $('#search-input-1, #search-input-2').on('keyup change', function () {
+                var query = $(this).val();
+                $('#search-input-1, #search-input-2').val(query);
+                filterDatasets();
+            });
+    
+            $('#subject-area-input, #associated-task-input, #feature-type-input').on('keyup change', filterDatasets);
+    
+            $('#create-dataset-button').on('click', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "{% url 'check_dataset_requests' %}",
+                    success: function (data) {
+                        if (data.has_requests) {
+                            $('#dataset-requests-popup').show();
+                        } else {
+                            window.location.href = "{% url 'basic_form' %}";
+                        }
+                    }
+                });
+            });
+    
+            $('#close-popup').on('click', function () {
+                $('#dataset-requests-popup').hide();
+            });
         });
     </script>
 </head>
+
 <body>
     <header class="site-header">
         <div class="logo">
-            <img src="{% static 'icon/logo.svg' %}" alt="App logo">
+            <a href="{% url 'logout' %}"><img src="{% static 'icon/logo.svg' %}" alt="App logo"></a>
         </div>
         <nav class="main-nav">
             <a href="#">Dataset</a>
@@ -84,22 +111,25 @@
         </nav>
         <div class="search-bar">
             <img src="{% static 'icon/search.svg' %}" alt="Search Icon" class="search-icon">
-            <input type="text" id="search-input" placeholder="Search...">
+            <input type="text" id="search-input-1" placeholder="Search...">
         </div>
         <div class="user-actions">
-            <button class="login-button"><img src="{% static 'icon/profile.svg' %}" alt="User Icon" class="user-icon"> Olla!</button>
+            <button class="login-button"><img src="{% static 'icon/profile.svg' %}" alt="User Icon" class="user-icon">
+                Olla!</button>
         </div>
     </header>
     <main>
         <section class="workspace-intro">
             <h1 class="workspace-title">Your Work</h1>
-            <p class="workspace-description">This is the private view of your content. To see what others see, visit Your Profile</p>
-            <a href="{% url 'basic_form' %}" class="create-button"><img src="{% static 'icon/add.svg' %}" alt="Create Icon"> Create datasets</a>
+            <p class="workspace-description">This is the private view of your content. To see what others see, visit
+                Your Profile</p>
+            <a href="#" id="create-dataset-button" class="create-button"><img src="{% static 'icon/add.svg' %}"
+                    alt="Create Icon"> Create datasets</a>
         </section>
         <section class="dataset-filters">
-            <div class="filtera-input">
+            <div class="filter-input">
                 <img src="{% static 'icon/search.svg' %}" alt="Search Icon" class="filter-icon">
-                <input type="text" id="search-input" placeholder="Search datasets..">
+                <input type="text" id="search-input-2" placeholder="Search datasets..">
             </div>
             <div class="filter-input">
                 <img src="{% static 'icon/area2.svg' %}" alt="Subject Area Icon" class="filter-icon">
@@ -118,43 +148,43 @@
             <h2>All of Your Work</h2>
             <ul id="dataset-list">
                 {% for dataset in datasets %}
-                    <li class="dataset-item">
-                        <img src="{{ dataset.profile_graphics.url }}" alt="Profile Image" class="dataset-image">
-                        <div class="dataset-details">
-                            <h2><a href="{% url 'dataset_detail' dataset.pk %}">{{ dataset.title }}</a></h2>
-                            <p>{{ dataset.subtitle }}</p>
-                            <div class="dataset-meta">
-                                {% for file in dataset.datasetfile_set.all %}
-                                    <div class="meta-item">
-                                        <img src="{% static 'icon/area.svg' %}" class="meta-icon" alt="Subject Icon">
-                                        {{ file.subject_area }}
-                                    </div>
-                                    <div class="meta-item">
-                                        <img src="{% static 'icon/task.svg' %}" class="meta-icon" alt="Task Icon">
-                                        {{ file.associated_task }}
-                                    </div>
-                                    <div class="meta-item">
-                                        <img src="{% static 'icon/feature.svg' %}" class="meta-icon" alt="Feature Icon">
-                                        {{ file.feature_type }}
-                                    </div>
-                                    <div class="meta-item">
-                                        <img src="{% static 'icon/status.svg' %}" class="meta-icon" alt="Status Icon">
-                                        {{ file.completeness_status }}
-                                    </div>
-                                {% endfor %}
+                <li class="dataset-item">
+                    <img src="{{ dataset.profile_graphics.url }}" alt="Profile Image" class="dataset-image">
+                    <div class="dataset-details">
+                        <h2><a href="{% url 'dataset_detail' dataset.pk %}">{{ dataset.title }}</a></h2>
+                        <p>{{ dataset.subtitle }}</p>
+                        <div class="dataset-meta">
+                            {% for file in dataset.datasetfile_set.all %}
+                            <div class="meta-item">
+                                <img src="{% static 'icon/area.svg' %}" class="meta-icon" alt="Subject Icon">
+                                {{ file.subject_area }}
                             </div>
+                            <div class="meta-item">
+                                <img src="{% static 'icon/task.svg' %}" class="meta-icon" alt="Task Icon">
+                                {{ file.associated_task }}
+                            </div>
+                            <div class="meta-item">
+                                <img src="{% static 'icon/feature.svg' %}" class="meta-icon" alt="Feature Icon">
+                                {{ file.feature_type }}
+                            </div>
+                            <div class="meta-item">
+                                <img src="{% static 'icon/status.svg' %}" class="meta-icon" alt="Status Icon">
+                                {{ file.completeness_status }}
+                            </div>
+                            {% endfor %}
                         </div>
-                        <div class="dataset-actions">
-                            <a href="{% url 'dataset_edit' dataset.pk %}" class="edit-button">
-                                <img src="{% static 'icon/edit.svg' %}" alt="Edit Icon" class="action-icon">
-                                Edit
-                            </a>
-                            <a href="{% url 'dataset_delete' dataset.pk %}" class="delete-button">
-                                <img src="{% static 'icon/delete.svg' %}" alt="Remove Icon" class="action-icon">
-                                Remove
-                            </a>
-                        </div>
-                    </li>
+                    </div>
+                    <div class="dataset-actions">
+                        <a href="{% url 'dataset_edit' dataset.pk %}" class="edit-button">
+                            <img src="{% static 'icon/edit.svg' %}" alt="Edit Icon" class="action-icon">
+                            Edit
+                        </a>
+                        <a href="{% url 'dataset_delete' dataset.pk %}" class="delete-button">
+                            <img src="{% static 'icon/delete.svg' %}" alt="Remove Icon" class="action-icon">
+                            Remove
+                        </a>
+                    </div>
+                </li>
                 {% endfor %}
             </ul>
         </section>
@@ -185,5 +215,64 @@
             </div>
         </div>
     </footer>
+
+    <!-- Pop-up for dataset requests -->
+    <div id="dataset-requests-popup" class="popup-overlay" style="display:none;">
+        <div class="popup-content">
+            <h1>Dataset Requests</h1>
+            <ul>
+                {% for request in requests %}
+                <li>
+                    <strong>Project Name:</strong> {{ request.project_name }}<br>
+                    <strong>Description Problem:</strong> {{ request.description_problem }}
+                    <form method="post" action="{% url 'accept_request' request.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Accept</button>
+                    </form>
+                    <form id="ignore-form-{{ request.id }}" method="post" action="{% url 'ignore_request' request.id %}">
+                        {% csrf_token %}
+                        <button type="button" onclick="confirmIgnore('{{ request.id }}')">Ignore</button>
+                    </form>
+                    <button type="button" onclick="toggleDetails('{{ request.id }}')">Details</button>
+                    <div id="details-{{ request.id }}" style="display:none;">
+                        <p><strong>Nama Project:</strong> {{ request.project_name }}</p>
+                        <p><strong>Nama Pekerja:</strong> {{ request.worker_name }}</p>
+                        <p><strong>Description Problem:</strong> {{ request.description_problem }}</p>
+                        <p><strong>Description Target:</strong> {{ request.description_target }}</p>
+                        <p><strong>Desc Features:</strong> {{ request.description_features }}</p>
+                        <p><strong>Category:</strong> {{ request.category }}</p>
+                        <p><strong>Start Date:</strong> {{ request.start_date }}</p>
+                        <p><strong>End Date:</strong> {{ request.end_date }}</p>
+                        <p><strong>Jumlah Data:</strong> {{ request.jumlah_data }}</p>
+                        <p><strong>Missing Value:</strong> {{ request.missing_value }}</p>
+                        <p><strong>Notes:</strong> {{ request.notes }}</p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            <button id="close-popup">Close</button>
+        </div>
+    </div>
+    <script>
+        function confirmIgnore(requestId) {
+            if (confirm('Are you sure you want to ignore this request?')) {
+                document.getElementById('ignore-form-' + requestId).submit();
+            }
+        }
+    
+        function toggleDetails(requestId) {
+            var details = document.getElementById('details-' + requestId);
+            if (details.style.display === 'none') {
+                details.style.display = 'block';
+            } else {
+                details.style.display = 'none';
+            }
+        }
+    
+        document.getElementById('close-popup').addEventListener('click', function () {
+            document.getElementById('dataset-requests-popup').style.display = 'none';
+        });
+    </script>
 </body>
+
 </html>

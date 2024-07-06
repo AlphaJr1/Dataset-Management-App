@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Dataset, Author, DatasetFile, AdditionalInfo, PhotoReview
+from .models import Dataset, Author, DatasetFile, AdditionalInfo, PhotoReview, DatasetRequest
 
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,3 +30,8 @@ class DatasetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dataset
         fields = ['title', 'subtitle', 'num_instances', 'num_features', 'profile_graphics', 'authors', 'dataset_files', 'additional_infos', 'photo_reviews']
+
+class DatasetRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DatasetRequest
+        fields = ['project_name', 'description_problem', 'description_target', 'start_date', 'end_date', 'notes', 'status', 'completeness_status']

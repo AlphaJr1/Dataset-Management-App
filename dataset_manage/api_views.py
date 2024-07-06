@@ -1,8 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .models import Dataset
-from .serializers import DatasetSerializer
+from rest_framework.permissions import IsAuthenticated
+from .models import Dataset, DatasetRequest
+from .serializers import DatasetSerializer, DatasetRequestSerializer
 
 class DatasetInfoAPIView(APIView):
 
@@ -23,4 +24,12 @@ class DatasetInfoAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class DatasetRequestAPI(APIView):
+    def post(self, request):
+        serializer = DatasetRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"id": serializer.instance.id}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

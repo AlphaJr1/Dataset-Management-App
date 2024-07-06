@@ -1,0 +1,156 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #EDF6EE;
+    color: #151101;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #EDF6EE;
+    padding: 20px 120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 56px;
+    margin-top: 24px;
+}
+
+header .logo {
+    height: 40px;
+}
+
+header ul {
+    list-style: none;
+    display: flex;
+    gap: 40px; 
+    margin: 0;
+    padding: 0;
+}
+
+header ul li {
+    display: inline;
+}
+
+header ul li a {
+    text-decoration: none;
+    color: #151101;
+    font-weight: bold;
+    font-size: 20px; 
+}
+
+main {
+    padding: 56px 0px 50px 120px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+main .intro {
+    max-width: 1080px;
+}
+
+main .intro h1 {
+    font-size: 56px;
+    margin-bottom: 32px;
+    margin-top: 16px;
+}
+
+main .intro p {
+    font-size: 28px;
+    margin-bottom: 32px;
+}
+
+main .buttons {
+    display: flex;
+    gap: 20px;
+}
+
+main .illustration img {
+    width: 400px;
+}
+
+main .btn {
+    text-decoration: none;
+    padding: 10px 40px;
+    border-radius: 16px;
+    font-weight: bold;
+    text-align: center;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    -ms-border-radius: 16px;
+    -o-border-radius: 16px;
+}
+
+main .view-dataset {
+    font-size: 24px;
+    background-color: #28412E;
+    color: #EDF6EE;
+}
+
+main .contribute-dataset {
+    font-size: 24px;
+    border: 2px solid #28412E;
+    color: #28412E;
+}
+
+footer {
+    background-color: #EDF6EE;
+    padding: 50px 120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+footer .footer-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+footer .logo-footer {
+    flex: 1;
+}
+
+footer .logo-footer img {
+    height: 40px;
+}
+
+footer .links {
+    display: flex;
+    gap: 50px;
+    flex: 2;
+}
+
+footer .column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+footer .column h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+footer .column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+footer .column ul li {
+    margin: 0;
+}
+
+footer .column ul li a {
+    text-decoration: none;
+    color: #151101;
+}

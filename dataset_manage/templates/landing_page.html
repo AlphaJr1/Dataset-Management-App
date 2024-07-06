@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/landing.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <img src="{% static 'icon/logo.svg' %}" alt="Logo" class="logo">
+            <ul>
+                <li><a href="{% url 'dataset_list' %}">Dataset</a></li>
+                <li><a href="{% url 'login' %}?next={% url 'dataset_list' %}">Contribute Dataset</a></li>
+                <li><a href="">Workspace</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="intro">
+            <h1>Welcome to Trisakti University's Machine Learning Repository</h1>
+            <p>Embark on a journey into the realm of machine learning with our diverse array of datasets. Join a vibrant community of learners and practitioners, where knowledge flows freely and innovation knows no bounds.</p>
+            <div class="buttons">
+                <a href="{% url 'dataset_view' %}" class="btn view-dataset">View Dataset</a>
+                <a href="{% url 'login' %}?next={% url 'dataset_list' %}" class="btn contribute-dataset">Contribute a Dataset</a>
+            </div>
+        </section>
+        <section class="illustration">
+            <img src="{% static 'ill/Character.svg' %}" alt="Illustration">
+        </section>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <div class="logo-footer">
+                <img src="{% static 'icon/logo.svg' %}" alt="Logo">
+            </div>
+            <div class="links">
+                <div class="column">
+                    <h3>The Project</h3>
+                    <ul>
+                        <li><a href="#">About us</a></li>
+                        <li><a href="#">Contribute</a></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">View Datasets</a></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>Logistic</h3>
+                    <ul>
+                        <li><a href="#">Our Team</a></li>
+                        <li><a href="#">Contact us</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

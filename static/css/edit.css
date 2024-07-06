@@ -1,0 +1,133 @@
+/* edit.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #F8F8F8;
+    color: #333;
+}
+
+.site-header {
+    background-color: #2E2841;
+    padding: 10px 20px;
+}
+
+.logo img {
+    height: 40px;
+}
+
+.main-content {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #FFF;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-section h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.form-section p {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #2E2841;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.submit-button, .back-button {
+    background-color: #2E2841;
+    color: #FFF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.submit-button:hover, .back-button:hover {
+    background-color: #1F1B2E;
+}
+
+.site-footer {
+    background-color: #2E2841;
+    color: #FFF;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer-logo {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.footer-columns {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.footer-column h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 5px;
+}
+
+.footer-column ul li a {
+    color: #FFF;
+    text-decoration: none;
+}
+
+.footer-column ul li a:hover {
+    text-decoration: underline;
+}
+
+.crispy-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #CCC;
+    border-radius: 5px;
+}
+
+.custom-file-upload {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px dashed #CCC;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.custom-checkbox {
+    margin-right: 10px;
+}

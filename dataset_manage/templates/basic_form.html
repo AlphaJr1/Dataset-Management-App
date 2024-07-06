@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Dataset Donation Form</title>
     {% load static %}
@@ -35,6 +36,7 @@
         }
     </script>
 </head>
+
 <body>
     <header class="site-header">
         <div class="logo">
@@ -44,7 +46,9 @@
     <main class="main-content">
         <section class="form-intro">
             <h1 class="form-title">Dataset Donation Form</h1>
-            <p class="form-description">We offer users the option to upload their dataset data to our repository. Users can provide tabular or non-tabular dataset data which will be made publicly available on our repository. Donators are free to edit their donated datasets, but edits must be approved before finalizing.</p>
+            <p class="form-description">We offer users the option to upload their dataset data to our repository. Users
+                can provide tabular or non-tabular dataset data which will be made publicly available on our repository.
+                Donators are free to edit their donated datasets, but edits must be approved before finalizing.</p>
         </section>
         <section class="form-content">
             <div class="form-tabs">
@@ -69,13 +73,31 @@
                     {{ form.num_instances|add_class:"crispy-input" }}
                 </div>
                 <div class="form-group">
-                    <label class="crispy-label" for="{{ form.num_features.id_for_label }}">{{ form.num_features.label }}*</label>
+                    <label class="crispy-label" for="{{ form.num_features.id_for_label }}">{{ form.num_features.label}}*</label>
                     {{ form.num_features|add_class:"crispy-input" }}
                 </div>
                 <div class="form-group">
                     <label class="crispy-label" for="{{ form.profile_graphics.id_for_label }}">{{ form.profile_graphics.label }}</label>
                     {{ form.profile_graphics|add_class:"custom-file-upload" }}
                 </div>
+                {% if form.project_name.value %}
+                <div class="form-group">
+                    <label class="crispy-label" for="{{ form.project_name.id_for_label }}">{{ form.project_name.label }}</label>
+                    {{ form.project_name|add_class:"crispy-input" }}
+                </div>
+                {% endif %}
+                {% if form.description_problem.value %}
+                <div class="form-group">
+                    <label class="crispy-label" for="{{ form.description_problem.id_for_label }}">{{ form.description_problem.label }}</label>
+                    {{ form.description_problem|add_class:"crispy-input" }}
+                </div>
+                {% endif %}
+                {% if form.request_id.value %}
+                <div class="form-group">
+                    <label class="crispy-label" for="{{ form.request_id.id_for_label }}">{{ form.request_id.label }}</label>
+                    {{ form.request_id|add_class:"crispy-input" }}
+                </div>
+                {% endif %}
                 <div class="form-actions">
                     <button class="back-button" type="button" onclick="clearFormSession()">Back</button>
                     <button class="next-button" name="next" type="submit">Next</button>
@@ -110,4 +132,5 @@
         </div>
     </footer>
 </body>
+
 </html>

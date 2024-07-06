@@ -1,40 +1,72 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Edit Dataset</title>
+    {% load static %}
+    {% load crispy_forms_tags %}
+    {% load i18n %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/edit.css' %}">
 </head>
+
 <body>
-    <h1>Edit Dataset</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ dataset_form.as_p }}
-        
-        <h2>Authors</h2>
-        {{ author_formset.management_form }}
-        {% for form in author_formset %}
-            {{ form.as_p }}
-        {% endfor %}
+    <header class="site-header">
+        <div class="logo">
+            <img src="{% static 'icon/logo.svg' %}" alt="App logo">
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="form-section">
+            <h1>Edit Dataset</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ dataset_form.as_p }}
 
-        <h2>Dataset Files</h2>
-        {{ dataset_file_formset.management_form }}
-        {% for form in dataset_file_formset %}
-            {{ form.as_p }}
-        {% endfor %}
+                <h2>Authors</h2>
+                {{ author_form.as_p }}
 
-        <h2>Additional Information</h2>
-        {{ additional_info_formset.management_form }}
-        {% for form in additional_info_formset %}
-            {{ form.as_p }}
-        {% endfor %}
+                <h2>Dataset Files</h2>
+                {{ dataset_file_form.as_p }}
 
-        <h2>Photo Reviews</h2>
-        {{ photo_formset.management_form }}
-        {% for form in photo_formset %}
-            {{ form.as_p }}
-        {% endfor %}
-        
-        <button type="submit">Save</button>
-        <a href="{% url 'dataset_list' %}">Back</a>
-    </form>
+                <h2>Additional Information</h2>
+                {{ additional_info_form.as_p }}
+
+                <h2>Photo Reviews</h2>
+                {{ photo_review_form.as_p }}
+
+                <div class="form-buttons">
+                    <button type="submit" class="submit-button">Submit</button>
+                    <a href="{% url 'dataset_list' %}" class="back-button">Back</a>
+                </div>
+            </form>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="footer-logo">D4tta</div>
+        <div class="footer-columns">
+            <div class="footer-column">
+                <h3>The Project</h3>
+                <ul>
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Contribute</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">View Datasets</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Logistic</h3>
+                <ul>
+                    <li><a href="#">Our Team</a></li>
+                    <li><a href="#">Contact us</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
 </body>
+
 </html>

@@ -102,13 +102,25 @@
                     {% endfor %}
                 </div>
                 <div class="form-group">
-                    <label class="crispy-label">Photo Reviews</label>
                     {% for photo in photo_reviews %}
-                        {% if photo.photo_review %}
+                    {% if photo.photo_review %}
+                    <label class="crispy-label">Photo Reviews</label>
                             <img src="{{ photo.photo_review.url }}" class="profile-graphics" />
                         {% endif %}
                     {% endfor %}
                 </div>
+                {% if dataset.project_name %}
+                <div class="form-group">
+                    <label class="crispy-label">Project Name</label>
+                    <p class="crispy-input">{{ dataset.project_name }}</p>
+                </div>
+                {% endif %}
+                {% if dataset.project_name %}
+                <div class="form-group">
+                    <label class="crispy-label">Request ID</label>
+                    <p class="crispy-input">{{ dataset.request_id }}</p> 
+                </div>
+                {% endif %}
                 <div class="form-actions">
                     <a class="back-button" href="{% url 'additional_info_form' %}">Back</a>
                     <button class="next-button" type="submit">Submit</button>

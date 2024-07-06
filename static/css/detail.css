@@ -1,7 +1,7 @@
 body {
     font-family: 'Inter', sans-serif;
     background-color: #EDF6EE;
-    color: #151101;
+    color: #412E28;
     margin: 0px 120px 0px 120px;
     padding: 0;
 }
@@ -130,6 +130,24 @@ body {
     height: 32px;
 }
 
+.about-dataset {
+    font-size: 28px;
+    margin-left: 104px;
+    margin-right: 140px;
+    margin-top: 72px;
+}
+
+.additional_info {
+    font-size: 24px;
+}
+
+.additional_info p {
+    max-width: 1080px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    margin-bottom: 40px;
+}
+
 .dataset-details {
     margin-left: 104px;
 }
@@ -151,7 +169,7 @@ body {
     align-items: center;
     font-size: 28px;
     font-weight: bold;
-    color: #151101;
+    color: #412E28;
 }
 
 .details-info img {
@@ -170,6 +188,7 @@ body {
 .details-keywords h3, .details-releases h3, .details-creators h3, .details-verificator h3 {
     margin-top: 0;
     font-size: 28px;
+    color: #412E28;
 }
 
 .details-keywords ul, .details-creators ul {
@@ -188,6 +207,7 @@ body {
     margin-bottom: 16px;
     background-color: #EDF6EE;
     border-radius: 4px;
+    color: rgb(21, 17, 1, 0.8);
 }
 
 .details-keywords li {
@@ -195,7 +215,6 @@ body {
     border-radius: 100px;
     padding: 8px 32px;
     background-color: #EDF6EE;
-    color: #151101;
     font-size: 24px;
     -webkit-border-radius: 100px;
     -moz-border-radius: 100px;
@@ -223,6 +242,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    color: rgb(21, 17, 1, 0.8);
 }
 
 .details-verificator img{
@@ -231,7 +251,7 @@ body {
 }
 
 .photo-reviews h2{
-    margin-top: 40px;
+    margin-top: 72px;
     margin-left: 104px;
     font-size: 28px;
 }
@@ -240,17 +260,43 @@ body {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
+    margin-bottom: 32px;
 }
 
 .photos-grid img {
-    width: 150px;
-    height: 150px;
+    margin-left: 104px;
+    height: 360px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 28px;
+    -webkit-border-radius: 28px;
+    -moz-border-radius: 28px;
+    -ms-border-radius: 28px;
+    -o-border-radius: 28px;
+}
+
+.dataset-project h2{
+    margin-top: 72px;
+    margin-left: 104px;
+    font-size: 28px;
+    margin-bottom: 32px;
+}
+
+.detail-project h4{
+    margin-top: 32px;
+    margin-left: 104px;
+    margin-bottom: 16px;
+    font-size: 24px;
+    color: #2E2841;
+}
+
+.detail-project p{
+    margin-top: 8px;
+    margin-left: 104px;
+    font-size: 20px;
 }
 
 .activity-detail h2 {
-    margin-top: 40px;
+    margin-top: 80px;
     margin-left: 104px;
     font-size: 28px;
 }
@@ -264,7 +310,7 @@ canvas {
 }
 
 .comments h2 {
-    margin-top: 40px;
+    margin-top: 80px;
     margin-left: 104px;
     font-size: 28px;
 }
@@ -275,41 +321,74 @@ canvas {
 }
 
 #comments div {
-    background-color: #ffffff;
-    padding: 10px;
+    background-color: #EDF6EE;
+    padding: 10px 0 0 0;
     border-radius: 8px;
     margin-bottom: 10px;
 }
 
 #comments p {
-    margin: 0px;
-}
-
-#comments small {
-    display: block;
-    color: #666;
-}
-
-#comment-form {
-    margin-top: 20px;
-    margin-left: 104px;
+    margin-bottom: 8px;
+    margin-left: 0;
+    font-size: 24px;
 }
 
 .comments p {
     margin-left: 104px;
 }
 
+#comments small {
+    display: block;
+    color: rgb(21, 17, 1, 0.5);
+}
+
+#comment-form {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 16px;
+}
+
+.comment-text {
+    width: 700px;
+    height: 40px;
+    padding: 16px 16px 8px 16px;
+    border-radius: 16px;
+    font-size: 24px;
+    resize: none;
+    color: #151101;
+    background-color: #EDF6EE;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    -ms-border-radius: 16px;
+    -o-border-radius: 16px;
+}
+
+.delete-comment {
+    background-color: #D0BAB3;
+    color: #151101;
+    font-size: 18px;
+    border-radius: 4px;
+    margin-top: 16px;
+}
+
 .button.write-review-button {
     background-color: #412E28;
     color: #EDF6EE;
     border: none;
-    border-radius: 16px;
-    font-size: 20px;
+    border-radius: 8px;
+    font-size: 24px;
+    font-weight: bold;
     text-align: center;
     cursor: pointer;
     text-decoration: none;
-    padding: 10px 20px;
-    margin-left: 104px;
+    padding: 5px 20px;
+    margin: 56px 0 8px 104px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
 }
 
 .button.submit-review-button {
@@ -322,6 +401,11 @@ canvas {
     cursor: pointer;
     text-decoration: none;
     padding: 10px 20px;
-    margin-top: 10px;
+    width: 144px;
+    height: 68px;
+    -webkit-border-radius: 16px;
+    -moz-border-radius: 16px;
+    -ms-border-radius: 16px;
+    -o-border-radius: 16px;
 }
 
